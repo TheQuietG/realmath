@@ -161,165 +161,52 @@ deficitrestante = anecesaria - atotaldisponible
 deficitrestante = 1560 m² - 600 m² 
 deficitrestante = 960 m² 
 
-### Análisis de viabilidad (Método tradicional)
-**Porcentaje de cobertura actual**
-% coberturaactual = (aactual / anecesaria) × 100
-% converturaactual = (550 / 1560) × 100
-% coberturaactual = 35.26%
+### Analisis de viabilidad 
+**Porcentaje de cobertura actual** 
+% coberturaactual = (aactual / anecesaria) × 100 
+% converturaactual = (550 / 1560) × 100 
+% coberturaactual = 35.26% 
 
-**Con ampliación de 50m²**
-% coberturanueva = (atotaldisponible / anecesaria) × 100
-% coberturanueva = (600 / 1560) × 100
-% coberturanueva = 38.46%
+**Con ampliación de 50m²** 
+% coberturanueva = (atotaldisponible / anecesaria) × 100 
+% coberturanueva = (600 / 1560) × 100 
+% coberturanueva = 38.46% 
 
-**Número de camiones que caben actualmente:**
-camionesactuales = aactual / aporcamion
-camionesactuales = 550 / 104
-camionesactuales = 5.29 ≈ 5 camiones
+**Número de camiones que caben actualmente:** 
+camionesactuales = aactual / aporcamion 
+camionesactuales = 550 / 104 
+camionesactuales = 5.29 ≈ 5 camiones 
 
-**Con ampliación:**
-camionesconampliacion = atotaldisponible / aporcamion
-camionesconampliacion = 600 / 104
-camionesconampliacion = 5.77 ≈ 5-6 camiones
-
-### Optimización mediante rotación y distribución mixta
-
-El análisis anterior asume que todos los camiones se estacionan en la misma orientación (horizontal), lo cual no aprovecha eficientemente el espacio disponible. Aplicando conceptos de **transformaciones geométricas** y **optimización espacial**, se desarrolló un análisis progresivo con 5 opciones:
-
-#### Línea de Planeación Progresiva
-
-**OPCIÓN 1: Distribución Horizontal Simple**
-- Estrategia: Todos los camiones en orientación horizontal (0°)
-- Capacidad: 2 camiones
-- Área utilizada: 550 m²
-- % del objetivo: 13%
-- Conclusión: Insuficiente, mucho espacio desperdiciado
-
-**OPCIÓN 2: Rotación 90° (Vertical)**
-- Estrategia: Aplicar rotación de 90° para aprovechar el ancho de los rectángulos
-- Cuando un camión rota 90°: el largo de 12m ahora ocupa el ancho, y el ancho de 6.5m (con distanciamiento) ocupa el largo
-- Rectángulo A (20m × 10m): Caben 3 camiones verticales (3 × 6.5m = 19.5m ≤ 20m)
-- Rectángulo B (15m × 10m): Caben 2 camiones verticales
-- Rectángulo C (20m × 10m): Caben 3 camiones verticales
-- Ampliación (10m × 5m): Cabe 1 camión vertical
-- Capacidad: 10 camiones
-- % del objetivo: 67%
-- Conclusión: Mejor aprovechamiento, pero aún insuficiente
-
-**OPCIÓN 3: Distribución Mixta Compacta (0° + 90°)**
-- Estrategia: Combinar orientaciones horizontal y vertical en cada rectángulo
-- Aplicación de matriz de rotación para posicionamiento exacto
-- Capacidad: 9 camiones
-- Área utilizada: 550 m²
-- % del objetivo: 60%
-- Conclusión: Aprovecha orientaciones mixtas pero necesita más espacio
-
-**OPCIÓN 4: Con Ampliación de 100 m²**
-- Estrategia: Distribución mixta + ampliar de 50 m² a 100 m² (10m × 10m)
-- Rectángulo A: 3 camiones (1 horizontal + 2 verticales)
-- Rectángulo B: 2 camiones (1 horizontal + 1 vertical)
-- Rectángulo C: 3 camiones (1 horizontal + 2 verticales)
-- Ampliación (10m × 10m): 5 camiones optimizados
-- Capacidad: 13 camiones
-- Área total: 650 m²
-- Inversión: $9,240 USD ($92.40/m² × 100 m²)
-- % del objetivo: 87%
-- Conclusión: Muy cerca del objetivo
-
-**OPCIÓN 5: Con 2 Ampliaciones de 100 m² cada una ✅**
-- Estrategia: Distribución mixta + 2 ampliaciones (total 200 m² adicionales)
-- Rectángulo A (200 m²): 3 camiones
-- Rectángulo B (150 m²): 2 camiones
-- Rectángulo C (200 m²): 3 camiones
-- Ampliación 1 (100 m²): 3 camiones
-- Ampliación 2 (100 m²): 4 camiones
-- **Capacidad: 15 camiones**
-- Área total: 750 m²
-- Inversión: $18,480 USD ($92.40/m² × 200 m²)
-- % del objetivo: **100%** ✅
-- ROI estimado: 10-12 meses
-- **Conclusión: SOLUCIÓN ÓPTIMA - Cumple 100% del requerimiento**
-
-#### Fundamentos Matemáticos de la Solución
-
-**Transformaciones geométricas aplicadas:**
-- Rotación de 90°: Matriz de rotación R(90°) = [[0, -1], [1, 0]]
-- Posicionamiento por coordenadas del centro (x, y) de cada camión
-- Cálculo de vértices rotados: V' = R(θ) × V + (x, y)
-
-**Optimización de espacio:**
-- Método tradicional: 104 m²/camión → 5 camiones en 550 m²
-- Método optimizado: Distribución variable por rectángulo → 15 camiones en 750 m²
-- Eficiencia mejorada: 50 m²/camión (52% de ahorro de espacio) 
+**Con ampliación:** 
+camionesconampliacion = atotaldisponible / aporcamion 
+camionesconampliacion = 600 / 104 
+camionesconampliacion = 5.77 ≈ 5-6 camiones 
 
 ---
 
-## RESPUESTA Y CONCLUSIONES
-### Resultados finales
-**Tabla completada con solución optimizada**
+## RESPUESTA Y CONCLUSIONES 
+### Resultados finales 
+**Tabla completada** 
 
-| Elemento | Método Tradicional | Solución Optimizada |
-| :--- | :--- | :--- |
-| Rectángulo A | 20 m × 10 m | 20 m × 10 m |
-| Rectángulo B | 15 m × 10 m | 15 m × 10 m |
-| Rectángulo C | 20 m × 10 m | 20 m × 10 m |
-| Radio conos de seguridad | 40 cm = 0.4 m | 40 cm = 0.4 m |
-| Área base | 550 m² | 550 m² |
-| Ampliación necesaria | 50 m² (insuficiente) | 200 m² (2 × 100 m²) |
-| Área total final | 600 m² | 750 m² |
-| Largo camión | 12 m | 12 m |
-| Ancho camión | 2.5 m | 2.5 m |
-| Perímetro | 110 m | 150 m (con ampliaciones) |
-| Distanciamiento de seguridad | 2 m | 2 m |
-| Espacio por camión (teórico) | 104 m² | Variable (optimizado) |
-| Capacidad alcanzada | 5 camiones (33%) | **15 camiones (100%)** ✅ |
-| Inversión requerida | $4,620 USD | $18,480 USD |
-| ROI estimado | N/A | 10-12 meses |
+| Elemento | Dimensiones |
+| :--- | :--- |
+| Rectángulo A | 20 m × 10 m |
+| Rectángulo B | 15 m × 10 m |
+| Rectángulo C | 20 m × 10 m |
+| Radio conos de seguridad | 40 cm = 0.4 m |
+| Área actual | 550 m² |
+| Área adicional | Máximo 50 m² |
+| Largo camión | 12 m |
+| Perímetro | 110 m |
+| Distanciamiento de seguridad | 2 m |
+| Área requerida total | 1,560 m² |
+| Déficit espacial | 1,010 m² |
+| Capacidad real actual | 5 camiones |
 
-### Análisis comparativo de resultados
 
-**Método Tradicional (Sin optimización):**
-- Asume orientación única (horizontal) para todos los camiones
-- Espacio fijo de 104 m² por camión (16m × 6.5m)
-- Resultado: Solo 5 camiones caben en 550 m²
-- Con ampliación de 50 m²: Apenas 5-6 camiones
-- **Déficit: 10 camiones (67% del objetivo sin cumplir)**
+ 
 
-**Solución Optimizada (Con rotaciones y distribución mixta):**
-- Aplica transformaciones geométricas (rotación 90°)
-- Combina orientaciones horizontal (0°) y vertical (90°)
-- Utiliza matrices de rotación para posicionamiento exacto
-- Optimiza el uso del espacio en cada rectángulo
-- Resultado: **15 camiones en 750 m²**
-- **Cumple 100% del requerimiento** ✅
-
-### Conclusiones
-
-Este problema nos demuestra que la matemática aplicada, específicamente la **geometría transformacional** y la **optimización espacial**, son herramientas poderosas para resolver desafíos reales en el entorno empresarial.
-
-**Aprendizajes clave:**
-
-1. **La geometría básica** es fundamental pero limitada. El análisis tradicional (área = largo × ancho) solo nos da una aproximación inicial del problema.
-
-2. **Las transformaciones geométricas** (rotaciones, traslaciones) permiten optimizar el uso del espacio. La rotación de 90° fue clave para aprovechar las dimensiones de los rectángulos.
-
-3. **El pensamiento progresivo** (Opciones 1-5) nos permite encontrar soluciones incrementales y justificar cada decisión con fundamentos matemáticos.
-
-4. **La visualización** mediante gráficos y coordenadas exactas es esencial para validar que la solución teórica es factible en la práctica.
-
-5. **El análisis costo-beneficio** muestra que una inversión de $18,480 USD para lograr 100% de capacidad operativa es viable, con ROI de 10-12 meses.
-
-**Recomendación final para Rodrish S.A:**
-
-Implementar la **OPCIÓN 5** con las siguientes especificaciones:
-- 2 ampliaciones de 100 m² cada una (total 200 m² adicionales)
-- Distribución mixta con rotaciones de 0° y 90°
-- Capacidad garantizada: 15 camiones
-- Cumplimiento normativa HSE: Distanciamiento de 2m respetado
-- Inversión total: $18,480 USD
-- Área total final: 750 m²
-
-La matemática no solo nos permitió calcular áreas, sino diseñar una solución óptima, eficiente y económicamente viable que transforma un problema operativo en una oportunidad de mejora para la empresa 
+En conclusión, este problema nos ayuda a entender que la matemática 
 
 ---
 
