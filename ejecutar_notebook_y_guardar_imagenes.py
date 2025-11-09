@@ -58,18 +58,20 @@ except FileNotFoundError:
 
 print(f"✓ Notebook cargado: {len(notebook['cells'])} celdas")
 
-# Mapeo de figuras a nombres de archivo
-# Ajustar según el orden real de generación de figuras en tu notebook
+# Mapeo CORRECTO de figuras a nombres de archivo
+# Basado en el orden REAL de generación
 figura_nombres = {
-    1: ('terreno_actual.png', 'Terreno actual'),
-    2: ('espacio_camion.png', 'Espacio requerido por camión'),
-    3: ('comparacion.png', 'Comparación de áreas'),
-    4: ('optimizacion_ampliacion.png', 'Análisis de optimización'),
-    5: ('opcion1.png', 'Opción 1 - Distribución básica'),
-    6: ('opcion2.png', 'Opción 2 - Solución óptima'),
-    7: ('opcion3.png', 'Opción 3 - Solución realista'),
-    8: ('opcion4.png', 'Opción 4 - Con pasillos'),
-    9: ('solucion_realista.png', 'Solución realista final'),
+    1: ('terreno_actual.png', 'Terreno actual (celda 6)'),
+    2: ('espacio_camion.png', 'Espacio requerido por camión (celda 8)'),
+    3: ('comparacion.png', 'Comparación de áreas (celda 10)'),
+    4: ('optimizacion_ampliacion.png', 'Análisis de optimización (celda 12)'),
+    5: ('opcion1.png', 'Opción 1 - Distribución básica (celda 14)'),
+    6: ('tabla_comparativa.png', 'Tabla comparativa (celda 15)'),
+    7: ('opcion2.png', 'Opción 2 - Solución óptima compacta (celda 16)'),
+    8: ('opcion3.png', 'Opción 3 - Solución realista (celda 18)'),
+    9: ('opcion4.png', 'Opción 4 - Con pasillos (celda 19)'),
+    10: ('solucion_realista.png', 'Opción 2 (celda 20)'),
+    # Nota: La celda 21 (rotación 90°) podría no generar figura si hay error
 }
 
 # Namespace global para ejecutar el código
@@ -122,10 +124,10 @@ for i, cell in enumerate(notebook['cells']):
 
                     fig = plt.figure(nueva_figura)
                     fig.savefig(ruta, dpi=300, bbox_inches='tight', facecolor='white')
-                    print(f"  ✓ Celda {i}: Guardada → {nombre_archivo} ({descripcion})")
+                    print(f"  ✓ Celda {i}: Guardada → {nombre_archivo}")
                     figuras_generadas = len(figuras_actuales)
                 else:
-                    print(f"  • Celda {i}: Figura {nueva_figura} generada")
+                    print(f"  • Celda {i}: Figura {nueva_figura} generada (no mapeada)")
                     figuras_generadas = len(figuras_actuales)
 
         except Exception as e:
@@ -156,15 +158,14 @@ for num_fig in plt.get_fignums():
         nombre_archivo, descripcion = figura_nombres[num_fig]
         ruta = os.path.join('images', nombre_archivo)
 
-        # Solo guardar si no existe o si queremos sobreescribir
-        if not os.path.exists(ruta) or True:  # Siempre sobreescribir
-            fig = plt.figure(num_fig)
-            fig.savefig(ruta, dpi=300, bbox_inches='tight', facecolor='white')
+        # Siempre sobreescribir
+        fig = plt.figure(num_fig)
+        fig.savefig(ruta, dpi=300, bbox_inches='tight', facecolor='white')
 
-            # Verificar tamaño del archivo
-            tamaño_kb = os.path.getsize(ruta) / 1024
-            print(f"✓ {nombre_archivo:30s} ({tamaño_kb:6.1f} KB) - {descripcion}")
-            figuras_guardadas.append(nombre_archivo)
+        # Verificar tamaño del archivo
+        tamaño_kb = os.path.getsize(ruta) / 1024
+        print(f"✓ {nombre_archivo:30s} ({tamaño_kb:6.1f} KB) - {descripcion}")
+        figuras_guardadas.append(nombre_archivo)
 
 # ============================================================================
 # RESUMEN
@@ -190,13 +191,12 @@ faltantes = []
 for num, (nombre, desc) in figura_nombres.items():
     ruta = os.path.join('images', nombre)
     if not os.path.exists(ruta):
-        faltantes.append(nombre)
+        faltantes.append((nombre, desc))
 
 if faltantes:
     print(f"\n⚠️ Figuras faltantes ({len(faltantes)}):")
-    for nombre in faltantes:
-        print(f"   • {nombre}")
-    print("\nPuedes generarlas manualmente ejecutando el notebook en Colab")
+    for nombre, desc in faltantes:
+        print(f"   • {nombre} - {desc}")
 
 print("\n" + "="*70)
 print("PRÓXIMOS PASOS")
@@ -209,12 +209,10 @@ print("""
    git add images/
 
 3. Hacer commit:
-   git commit -m "Agregar imágenes del análisis de parqueadero"
+   git commit -m "Regenerar imágenes con correcciones"
 
-4. Push a main:
-   git push origin main
-
-5. Verificar en GitHub que las imágenes se ven en proyect_final.md
+4. Push:
+   git push origin <tu-rama>
 """)
 
 print("="*70)
