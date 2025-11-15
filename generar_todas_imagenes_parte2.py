@@ -430,99 +430,206 @@ def generar_solucion_optimizada():
 # IMÁGENES 8a-c: OPCIONES DE DISTRIBUCIÓN
 #=============================================================================
 
+def dibujar_zona_seguridad(ax, x, y, angulo=0, color='yellow', alpha=0.2):
+    """Dibuja zona de seguridad alrededor de un camión (16m × 6.5m)"""
+    largo = 16  # 12m camión + 2m adelante + 2m atrás
+    ancho = 6.5  # 2.5m camión + 2m izq + 2m der
+
+    # Crear polígono de la zona
+    vertices = np.array([
+        [-largo/2, -ancho/2],
+        [largo/2, -ancho/2],
+        [largo/2, ancho/2],
+        [-largo/2, ancho/2]
+    ])
+
+    # Rotar
+    theta = np.radians(angulo)
+    rot_matrix = np.array([
+        [np.cos(theta), -np.sin(theta)],
+        [np.sin(theta), np.cos(theta)]
+    ])
+    vertices_rot = vertices @ rot_matrix.T
+
+    # Trasladar
+    vertices_final = vertices_rot + np.array([x, y])
+
+    # Dibujar zona
+    from matplotlib.patches import Polygon
+    zona = Polygon(vertices_final, facecolor=color, edgecolor='orange',
+                   linewidth=1.5, alpha=alpha, linestyle='--')
+    ax.add_patch(zona)
+
 def generar_opciones():
-    """Genera las 3 opciones de distribución"""
+    """Genera las 3 opciones de distribución con espaciamiento HSE correcto"""
 
-    # Opción 1: Básica (3 camiones)
-    fig, ax = plt.subplots(figsize=(12, 10))
+    # OPCIÓN 1: SIN AMPLIACIÓN - Solo con 550 m² actuales
+    # Capacidad: 3 camiones máximo (espaciados adecuadamente)
+    fig, ax = plt.subplots(figsize=(14, 10))
 
-    # Rectángulos
-    for (x, y, w, h, label, area) in [(0, 20, 20, 10, 'A', '200m²'),
-                                       (0, 10, 20, 10, 'B+50', '200m²'),
-                                       (0, 0, 20, 10, 'C', '200m²')]:
-        rect = Rectangle((x, y), w, h, facecolor='#d5dbdb',
-                         edgecolor='#34495e', linewidth=2, alpha=0.4)
+    # Rectángulos base (550 m² total)
+    for (x, y, w, h, label, area, color) in [
+        (0, 20, 20, 10, 'A', '200m²', '#d5dbdb'),
+        (0, 10, 15, 10, 'B', '150m²', '#f9e79f'),  # Original sin ampliar
+        (0, 0, 20, 10, 'C', '200m²', '#d5dbdb')
+    ]:
+        rect = Rectangle((x, y), w, h, facecolor=color,
+                         edgecolor='#34495e', linewidth=2, alpha=0.5)
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h - 1, f'{label}\n{area}',
-                ha='center', va='top', fontsize=9, fontweight='bold')
+        ax.text(x + w/2, y + h/2, f'{label}\n{area}',
+                ha='center', va='center', fontsize=10, fontweight='bold')
 
-    # Camiones (1 por zona)
-    for i, (x, y) in enumerate([(10, 25), (10, 15), (10, 5)], 1):
-        dibujar_camion(ax, x, y, 0, color='#3498db', alpha=0.7)
+    # 3 camiones con zonas de seguridad (1 por rectángulo)
+    posiciones = [
+        (10, 25),  # A
+        (7.5, 15),  # B
+        (10, 5)    # C
+    ]
+
+    for i, (x, y) in enumerate(posiciones, 1):
+        dibujar_zona_seguridad(ax, x, y, 0, color='yellow', alpha=0.15)
+        dibujar_camion(ax, x, y, 0, color='#3498db', alpha=0.8)
         ax.text(x, y, str(i), ha='center', va='center',
                 fontsize=14, fontweight='bold', color='white')
 
-    ax.set_xlim(-2, 24)
+    ax.set_xlim(-2, 25)
     ax.set_ylim(-2, 32)
     ax.set_aspect('equal')
     ax.grid(True, alpha=0.3)
-    ax.set_title('OPCIÓN 1: Distribución Básica\n3 camiones (1 por zona) - 20% del objetivo',
+    ax.set_xlabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_ylabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_title('OPCIÓN 1: Sin Ampliación (550 m²)\n' +
+                 '3 camiones con distanciamiento HSE de 2m',
                  fontsize=13, fontweight='bold', pad=15)
+
+    # Leyenda
+    info = "• Área disponible: 550 m²\n• Capacidad: 3 camiones\n• Sin inversión\n• Zonas amarillas: seguridad 2m"
+    ax.text(0.02, 0.98, info, transform=ax.transAxes, fontsize=9,
+            verticalalignment='top', bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
+
     plt.tight_layout()
     plt.savefig('./images/opcion1.png', dpi=150, bbox_inches='tight')
     print("✅ Imagen 8a: opcion1.png generada")
     plt.close()
 
-    # Opción 2: Compacta (6 camiones) - ÓPTIMA
-    fig, ax = plt.subplots(figsize=(12, 10))
+    # OPCIÓN 2: CON AMPLIACIÓN DE 198.8 m² - SOLUCIÓN ÓPTIMA
+    # Capacidad: 5 camiones simultáneos (batches)
+    fig, ax = plt.subplots(figsize=(16, 10))
 
-    for (x, y, w, h, label, area) in [(0, 20, 20, 10, 'A', '200m²'),
-                                       (0, 10, 20, 10, 'B+50', '200m²'),
-                                       (0, 0, 20, 10, 'C', '200m²')]:
-        rect = Rectangle((x, y), w, h, facecolor='#aed6f1',
-                         edgecolor='#2874a6', linewidth=2, alpha=0.5)
+    # Rectángulos con ampliación
+    for (x, y, w, h, label, area, color) in [
+        (0, 20, 20, 10, 'A', '200m²', '#aed6f1'),
+        (0, 10, 34.88, 10, 'B (expandido)', '~350m²', '#d5f4e6'),  # Con ampliación
+        (0, 0, 20, 10, 'C', '200m²', '#aed6f1')
+    ]:
+        rect = Rectangle((x, y), w, h, facecolor=color,
+                         edgecolor='#2874a6', linewidth=2.5, alpha=0.6)
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h - 1, f'{label}\n{area}',
-                ha='center', va='top', fontsize=9, fontweight='bold')
+        ax.text(x + w/2, y + h/2, f'{label}\n{area}',
+                ha='center', va='center', fontsize=10, fontweight='bold')
 
-    # Camiones (2 por zona)
-    for i, (x, y) in enumerate([(6, 25), (14, 25), (6, 15), (14, 15), (6, 5), (14, 5)], 1):
-        dibujar_camion(ax, x, y, 0, color='#2ecc71', alpha=0.7)
+    # Indicador de ampliación
+    amp_rect = Rectangle((15, 10), 19.88, 10, facecolor='none',
+                          edgecolor='red', linewidth=3, linestyle='--')
+    ax.add_patch(amp_rect)
+    ax.text(25, 9, '+198.8m²', ha='center', fontsize=9, fontweight='bold',
+            color='red', bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
+
+    # 5 camiones distribuidos con zonas de seguridad
+    # En A: 2 camiones lado a lado (comparten espacio de 2m entre ellos)
+    # Cálculo: camión 1 centro a 6m, camión 2 centro a 14m (separación de 8m)
+    # Cada camión mide 2.5m de ancho, más 2m de seguridad = distancia mínima centro a centro: 2.5 + 2 + 2.5 = 7m
+    posiciones_optima = [
+        (6, 25),    # A1
+        (14, 25),   # A2 (separado 8m del centro, suficiente para 2m de distancia)
+        (8, 15),    # B1
+        (22, 15),   # B2
+        (10, 5)     # C1
+    ]
+
+    for i, (x, y) in enumerate(posiciones_optima, 1):
+        dibujar_zona_seguridad(ax, x, y, 0, color='lightgreen', alpha=0.15)
+        dibujar_camion(ax, x, y, 0, color='#2ecc71', alpha=0.8)
         ax.text(x, y, str(i), ha='center', va='center',
                 fontsize=14, fontweight='bold', color='white')
 
-    ax.set_xlim(-2, 24)
+    ax.set_xlim(-2, 38)
     ax.set_ylim(-2, 32)
     ax.set_aspect('equal')
     ax.grid(True, alpha=0.3)
-    ax.set_title('OPCIÓN 2: Distribución Compacta (ÓPTIMA)\n6 camiones (2 por zona) - 40% del objetivo - ✅ RECOMENDADA',
-                 fontsize=13, fontweight='bold', pad=15)
+    ax.set_xlabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_ylabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_title('OPCIÓN 2: Con Ampliación de 198.8 m² (ÓPTIMA)\n' +
+                 '5 camiones simultáneos - Cumple 100% necesidades operativas - ✅ RECOMENDADA',
+                 fontsize=13, fontweight='bold', pad=15, color='#27ae60')
+
+    # Leyenda
+    info = ("• Área total: 748.8 m² (550 + 198.8)\n"
+            "• Capacidad: 5 camiones simultáneos\n"
+            "• Inversión: ~$18,373\n"
+            "• Batches: 3 grupos de 5\n"
+            "• Zonas verdes: seguridad 2m HSE")
+    ax.text(0.02, 0.98, info, transform=ax.transAxes, fontsize=9,
+            verticalalignment='top', bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9))
+
     plt.tight_layout()
     plt.savefig('./images/opcion2.png', dpi=150, bbox_inches='tight')
     print("✅ Imagen 8b: opcion2.png generada")
     plt.close()
 
-    # Opción 3: Con pasillos amplios (4 camiones)
-    fig, ax = plt.subplots(figsize=(12, 10))
+    # OPCIÓN 3: DISTRIBUCIÓN ALTERNATIVA CON ÁREAS ACTUALES
+    # 4 camiones con pasillos más amplios
+    fig, ax = plt.subplots(figsize=(14, 10))
 
-    for (x, y, w, h, label, area) in [(0, 20, 20, 10, 'A', '200m²'),
-                                       (0, 10, 20, 10, 'B+50 (PASILLO)', '200m²'),
-                                       (0, 0, 20, 10, 'C', '200m²')]:
-        color = '#fcf3cf' if 'PASILLO' in label else '#d5dbdb'
+    # Rectángulos base
+    for (x, y, w, h, label, area, color) in [
+        (0, 20, 20, 10, 'A', '200m²', '#d5dbdb'),
+        (0, 10, 15, 10, 'B (pasillo)', '150m²', '#fcf3cf'),
+        (0, 0, 20, 10, 'C', '200m²', '#d5dbdb')
+    ]:
         rect = Rectangle((x, y), w, h, facecolor=color,
-                         edgecolor='#34495e', linewidth=2, alpha=0.4)
+                         edgecolor='#34495e', linewidth=2, alpha=0.5)
         ax.add_patch(rect)
-        ax.text(x + w/2, y + h/2, label,
-                ha='center', va='center', fontsize=9, fontweight='bold')
+        ax.text(x + w/2, y + h/2, f'{label}\n{area}',
+                ha='center', va='center', fontsize=10, fontweight='bold')
 
-    # Camiones
-    for i, (x, y) in enumerate([(10, 25), (6, 5), (14, 5)], 1):
-        dibujar_camion(ax, x, y, 0, color='#f39c12', alpha=0.7)
+    # Pasillo central en B
+    pasillo_rect = Rectangle((3, 10), 9, 10, facecolor='none',
+                              edgecolor='orange', linewidth=2.5, linestyle=':')
+    ax.add_patch(pasillo_rect)
+    ax.text(7.5, 15, 'PASILLO\nMANIOBRAS\n5m', ha='center', va='center',
+            fontsize=9, color='orange', fontweight='bold',
+            bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    # 4 camiones: 2 en A, 0 en B (pasillo), 2 en C
+    posiciones_alt = [
+        (6, 25),    # A1
+        (14, 25),   # A2
+        (6, 5),     # C1
+        (14, 5)     # C2
+    ]
+
+    for i, (x, y) in enumerate(posiciones_alt, 1):
+        dibujar_zona_seguridad(ax, x, y, 0, color='lightyellow', alpha=0.15)
+        dibujar_camion(ax, x, y, 0, color='#f39c12', alpha=0.8)
         ax.text(x, y, str(i), ha='center', va='center',
                 fontsize=14, fontweight='bold', color='white')
 
-    # Pasillo
-    ax.add_patch(Rectangle((8, 10), 4, 10, facecolor='none',
-                           edgecolor='orange', linewidth=2, linestyle='--'))
-    ax.text(10, 15, 'PASILLO\n4m', ha='center', va='center',
-            fontsize=10, color='orange', fontweight='bold')
-
-    ax.set_xlim(-2, 24)
+    ax.set_xlim(-2, 25)
     ax.set_ylim(-2, 32)
     ax.set_aspect('equal')
     ax.grid(True, alpha=0.3)
-    ax.set_title('OPCIÓN 3: Con Pasillos Amplios\n4 camiones - 27% del objetivo',
+    ax.set_xlabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_ylabel('Distancia (metros)', fontsize=11, fontweight='bold')
+    ax.set_title('OPCIÓN 3: Con Pasillo Central de Maniobras\n' +
+                 '4 camiones - Prioriza espacio de circulación',
                  fontsize=13, fontweight='bold', pad=15)
+
+    # Leyenda
+    info = "• Área: 550 m²\n• Capacidad: 4 camiones\n• B usado como pasillo\n• Mayor espacio de maniobra"
+    ax.text(0.02, 0.98, info, transform=ax.transAxes, fontsize=9,
+            verticalalignment='top', bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9))
+
     plt.tight_layout()
     plt.savefig('./images/opcion3.png', dpi=150, bbox_inches='tight')
     print("✅ Imagen 8c: opcion3.png generada")
@@ -540,17 +647,17 @@ def generar_tabla_comparativa():
     ax.axis('off')
 
     datos = [
-        ['Opción 1', 'Básica', '3', '20%', 'Baja', 'Simple', 'Desperdicia espacio'],
-        ['Opción 2', 'Compacta', '6', '40%', 'Alta', 'Óptima', '✅ RECOMENDADA'],
-        ['Opción 3', 'Pasillos 4m', '4', '27%', 'Media', 'Segura', 'Sacrifica capacidad']
+        ['Opción 1', 'Sin ampliación\n(550 m²)', '3', 'Distanciamiento\nHSE correcto', 'Sin inversión', 'Base actual'],
+        ['Opción 2', 'Con ampliación\n(748.8 m²)', '5', 'Cumple normas\nHSE + batches', '~$18,373', '✅ ÓPTIMA - 100% necesidades'],
+        ['Opción 3', 'Pasillo central\n(550 m²)', '4', 'Prioriza\nmaniobras', 'Sin inversión', 'Mayor circulación']
     ]
 
-    columnas = ['Opción', 'Estrategia', 'Camiones', '% Objetivo',
-                'Eficiencia', 'Distribución', 'Observación']
+    columnas = ['Opción', 'Configuración', 'Camiones\nSimultáneos', 'Seguridad HSE',
+                'Inversión', 'Observación']
 
     tabla = ax.table(cellText=datos, colLabels=columnas,
                      cellLoc='center', loc='center',
-                     colWidths=[0.12, 0.15, 0.12, 0.12, 0.13, 0.13, 0.23])
+                     colWidths=[0.12, 0.20, 0.14, 0.18, 0.13, 0.23])
 
     tabla.auto_set_font_size(False)
     tabla.set_fontsize(10)
@@ -572,8 +679,15 @@ def generar_tabla_comparativa():
                 tabla[(i, j)].set_facecolor('white')
 
     ax.set_title('TABLA COMPARATIVA DE OPCIONES EVALUADAS\n' +
-                 'Análisis: Capacidad, Eficiencia y Operatividad',
+                 'Análisis con Distanciamiento HSE de 2m (Bidireccional)',
                  fontsize=14, fontweight='bold', pad=20)
+
+    # Nota al pie
+    nota = ("NOTA: Todas las opciones cumplen normas HSE con distanciamiento de 2m bidireccional.\n"
+            "Opción 2 requiere ampliación de 198.8m² calculada con ecuación: A_amp = 149.76n - 550\n"
+            "Sistema de batches: 15 camiones en 3 grupos de 5 (16h fuera + 8h dentro)")
+    fig.text(0.5, 0.05, nota, ha='center', fontsize=9, style='italic',
+             bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9))
 
     plt.savefig('./images/tabla_comparativa.png', dpi=150, bbox_inches='tight')
     print("✅ Imagen 9: tabla_comparativa.png generada")
