@@ -390,25 +390,52 @@ $$\text{Área}_{\text{total con config 1}} = 200 + 350 + 200 = 750\,\text{m}^2$$
 
 ### PASO 7: Visualización de Opciones Evaluadas
 
-Durante el proceso de optimización, se evaluaron diferentes estrategias:
+Durante el proceso de optimización, se evaluaron diferentes estrategias considerando el distanciamiento HSE bidireccional de 2m:
 
-**Opción 1: Distribución básica (1 camión por zona)**
+**Opción 1: Sin Ampliación (550 m²)**
+
+Utilizando solo el área actual sin inversión adicional.
 
 ![Opción 1](./images/opcion1.png)
 
-*Figura 8a: Distribución básica - 3 camiones (20% del objetivo)*
+*Figura 8a: 3 camiones con distanciamiento HSE correcto de 2m (zonas amarillas muestran área de seguridad de 16m × 6.5m por camión)*
 
-**Opción 2: Distribución compacta (2 camiones por zona)**
+- **Capacidad:** 3 camiones
+- **Inversión:** $0 (sin ampliación)
+- **Configuración:** 1 camión por rectángulo (A, B, C)
+- **Distanciamiento:** 2m bidireccional cumpliendo normas HSE
+- **Observación:** Utiliza solo el área base disponible
+
+**Opción 2: Con Ampliación de 198.8 m² (SOLUCIÓN ÓPTIMA)**
+
+Implementa la ampliación calculada para los 5 camiones simultáneos.
 
 ![Opción 2](./images/opcion2.png)
 
-*Figura 8b: Distribución compacta - 6 camiones (40% del objetivo) - SOLUCIÓN ÓPTIMA*
+*Figura 8b: 5 camiones simultáneos con ampliación de 198.8m² - Cumple 100% de necesidades operativas - ✅ RECOMENDADA*
 
-**Opción 3: Con pasillos amplios**
+- **Capacidad:** 5 camiones simultáneos
+- **Inversión:** ~$18,373
+- **Área total:** 748.8 m² (550 + 198.8)
+- **Configuración:** Rectángulo B expandido a ~35m × 10m
+- **Distanciamiento:** Zonas verdes muestran seguridad HSE de 2m
+- **Sistema de batches:** 3 grupos de 5 camiones (16h fuera + 8h dentro)
+- **Observación:** ✅ Cubre 100% de las necesidades operativas reales
+
+**Opción 3: Con Pasillo Central de Maniobras (550 m²)**
+
+Prioriza espacio de circulación usando rectángulo B como pasillo.
 
 ![Opción 3](./images/opcion3.png)
 
-*Figura 8c: Distribución con pasillos de 4m - 4 camiones (27% del objetivo)*
+*Figura 8c: 4 camiones con pasillo central - Prioriza espacio de maniobras*
+
+- **Capacidad:** 4 camiones
+- **Inversión:** $0 (sin ampliación)
+- **Configuración:** 2 camiones en A, 0 en B (pasillo), 2 en C
+- **Pasillo:** 5m de ancho en zona B para maniobras
+- **Distanciamiento:** Cumple normas HSE
+- **Observación:** Sacrifica capacidad por mayor espacio de circulación
 
 ---
 
@@ -416,7 +443,27 @@ Durante el proceso de optimización, se evaluaron diferentes estrategias:
 
 ![Tabla comparativa](./images/tabla_comparativa.png)
 
-*Figura 9: Tabla comparativa de todas las opciones evaluadas con ventajas y desventajas*
+*Figura 9: Tabla comparativa mostrando configuración, capacidad, seguridad HSE e inversión de cada opción*
+
+**Análisis comparativo:**
+
+| Aspecto | Opción 1 | Opción 2 | Opción 3 |
+|:---|:---:|:---:|:---:|
+| Área total | 550 m² | 748.8 m² | 550 m² |
+| Camiones simultáneos | 3 | 5 ✅ | 4 |
+| Inversión | $0 | ~$18,373 | $0 |
+| Cumple batches | ❌ No | ✅ Sí (100%) | ⚠️ Parcial (80%) |
+| Normas HSE | ✅ | ✅ | ✅ |
+| Espacio de maniobras | Regular | Óptimo | Alto |
+
+**Conclusión del análisis de opciones:**
+
+La **Opción 2** es la solución óptima porque:
+- Cumple exactamente con los 5 camiones simultáneos requeridos por el sistema de batches
+- La inversión de ~$18,373 es proporcional a las necesidades reales
+- Mantiene uniformidad de diseño con ancho de 10m
+- Cumple todas las normas HSE con distanciamiento bidireccional de 2m
+- Se basa en la ecuación lineal calculada: $A_{amp} = 149.76 \times 5 - 550 = 198.8\,\text{m}^2$
 
 ---
 
@@ -466,15 +513,15 @@ La ecuación desarrollada $A_{amp} = 149.76n - 550$ nos permite:
 - Entrada: número de camiones deseado
 - Salida: metros cuadrados de ampliación necesarios
 
-**2. Calcular capacidad con presupuesto dado:**
+**2. Calcular capacidad con área disponible:**
 
 Si tenemos un área total $A$, podemos calcular cuántos camiones caben:
 
 $$n = \frac{A}{149.76}$$
 
 **Ejemplos:**
-- Con 600 m² → $n = 600/149.76 = 4$ camiones (teórico)
-- Con optimización → 6 camiones (práctico)
+- Con 550 m² (área actual) → $n = 550/149.76 = 3.67$ → 3 camiones máximo
+- Con 748.8 m² (con ampliación) → $n = 748.8/149.76 = 5$ camiones ✅
 
 **3. Validación de la ecuación:**
 
