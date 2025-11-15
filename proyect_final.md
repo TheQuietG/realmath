@@ -34,9 +34,15 @@ En la empresa logística Rodrish S.A, se ha identificado que el diseño del parq
 
 El gerente de operaciones enfrenta un desafío: optimizar el parqueadero de maniobras para camiones. El espacio actual es insuficiente para los 15 camiones que operan diariamente. El director de HSE le indica al gerente que necesita implementar conos de seguridad para analizar el distanciamiento de los camiones, cumpliendo con un distanciamiento mínimo de 2 metros.
 
-**La pregunta clave es:** ¿Cuánta área de ampliación se necesita para estacionar 15 camiones cumpliendo con las normas HSE y con espacio adecuado para maniobras de entrada y salida?
+**La pregunta clave es:** ¿Cuánta área de ampliación se necesita para estacionar los camiones cumpliendo con las normas HSE y con espacio adecuado para maniobras de entrada y salida?
 
-Este problema involucra contradicciones entre espacio disponible, distanciamiento de seguridad, presupuesto y operatividad.
+**Consideración importante:** Aunque la empresa opera 15 camiones, no todos están en el parqueadero simultáneamente. Cada camión tiene un ciclo operativo de:
+- 16 horas fuera del parqueadero (en ruta)
+- 8 horas dentro del parqueadero (descanso/mantenimiento)
+
+Por lo tanto, los 15 camiones se pueden dividir en **3 batches de 5 camiones**, requiriendo espacio simultáneo solo para 5 camiones a la vez.
+
+Este problema involucra contradicciones entre espacio disponible, distanciamiento de seguridad y operatividad.
 
 ---
 
@@ -84,9 +90,8 @@ De acuerdo con lo anterior, el plan para determinar el área de ampliación nece
 2. Calcular el espacio requerido por cada camión considerando el distanciamiento de seguridad de 2m
 3. Calcular el radio de giro necesario para maniobras
 4. Desarrollar una ecuación lineal que relacione el número de camiones con el área total necesaria
-5. Determinar el área de ampliación necesaria para 15 camiones
-6. Evaluar diferentes configuraciones de ampliación
-7. Analizar el caso de estudio con presupuesto limitado
+5. Determinar el área de ampliación necesaria considerando batches de 5 camiones simultáneos
+6. Evaluar diferentes configuraciones de ampliación según el resultado de la ecuación
 
 ---
 
@@ -295,11 +300,17 @@ $$A_{\text{ampliación}} = 149.76 \times 5 - 550 = 748.8 - 550 = 198.8\,\text{m}
 
 $$A_{\text{ampliación}} = 149.76 \times 10 - 550 = 1497.6 - 550 = 947.6\,\text{m}^2$$
 
-**Para n = 15 camiones (objetivo del problema):**
+**Para n = 15 camiones (capacidad total de la flota):**
 
-$$A_{\text{ampliación}} = 149.76 \times 15 - 550 = 2246.4 - 550 = \boxed{1696.4\,\text{m}^2}$$
+$$A_{\text{ampliación}} = 149.76 \times 15 - 550 = 2246.4 - 550 = 1696.4\,\text{m}^2$$
 
-**Conclusión:** Para estacionar 15 camiones cumpliendo con normas HSE y con espacio adecuado para maniobras, se necesitan **1,696.4 m² de ampliación**.
+**Sin embargo**, considerando el ciclo operativo de los camiones (16h fuera, 8h dentro), solo 5 camiones están simultáneamente en el parqueadero:
+
+**Para n = 5 camiones (capacidad simultánea requerida):**
+
+$$A_{\text{ampliación}} = 149.76 \times 5 - 550 = 748.8 - 550 = \boxed{198.8\,\text{m}^2}$$
+
+**Conclusión:** Para estacionar los 5 camiones que están simultáneamente en el parqueadero, cumpliendo con normas HSE y con espacio adecuado para maniobras, se necesitan **198.8 m² de ampliación**.
 
 ---
 
@@ -327,33 +338,33 @@ $$A_{\text{ampliación}} = 149.76 \times 15 - 550 = 2246.4 - 550 = \boxed{1696.4
 
 ### PASO 6: Configuraciones Posibles de Ampliación
 
-Dado que la ampliación necesaria para 15 camiones (1,696.4 m²) es muy grande, analicemos primero las diferentes **configuraciones geométricas** en las que podríamos implementar una ampliación, independientemente de su tamaño.
+Según la ecuación, necesitamos **198.8 m²** de ampliación para los 5 camiones que están simultáneamente en el parqueadero. Analicemos las diferentes **configuraciones geométricas** posibles:
 
 **Configuración 1: Ampliación rectangular junto al Rectángulo B**
 
 Esta configuración busca crear simetría en el diseño:
 
 - Rectángulo B actual: 15m × 10m = 150 m²
-- Si agregamos una ampliación de 5m × 10m = 50 m² al lado de B:
-- Rectángulo B expandido: 20m × 10m = 200 m²
+- Ampliación requerida: 198.8 m²
+- Posible dimensión: 19.88m × 10m junto a B
+- Rectángulo B expandido: 34.88m × 10m ≈ 35m × 10m = 350 m²
 
-**Ventaja:** Crea simetría perfecta (3 rectángulos de 200 m² cada uno)
+**Ventaja:** Mantiene el ancho uniforme de 10m
 
-$$\text{Área}_{\text{total con config 1}} = 200 + 200 + 200 = 600\,\text{m}^2$$
+$$\text{Área}_{\text{total con config 1}} = 200 + 350 + 200 = 750\,\text{m}^2$$
 
 **Configuración 2: Ampliación rectangular junto al Rectángulo A**
 
 - Rectángulo A actual: 20m × 10m = 200 m²
-- Ampliación: 10m × 5m = 50 m² al lado de A
-- Rectángulo A expandido: 30m × 10m (o 20m × 15m)
+- Ampliación: 19.88m × 10m junto a A
+- Rectángulo A expandido: 39.88m × 10m ≈ 40m × 10m
 
-**Desventaja:** Rompe la simetría
+**Ventaja:** Mantiene uniformidad de 10m de ancho
 
-**Configuración 3: Ampliación cuadrada**
+**Configuración 3: Ampliación con forma cuadrada/rectangular optimizada**
 
-- Forma cuadrada: $\sqrt{50} \times \sqrt{50} = 7.07\,\text{m} \times 7.07\,\text{m}$
-
-**Desventaja:** Difícil de integrar con la geometría rectangular existente
+- Dimensiones posibles: 20m × 10m aproximadamente
+- Se agrega como extensión en una zona disponible
 
 ---
 
@@ -361,80 +372,23 @@ $$\text{Área}_{\text{total con config 1}} = 200 + 200 + 200 = 600\,\text{m}^2$$
 
 ![Configuraciones de ampliación](./images/configuraciones_ampliacion.png)
 
-*Figura 6: Análisis de las tres configuraciones posibles de ampliación evaluando simetría y eficiencia*
+*Figura 6: Análisis de las configuraciones posibles de ampliación basadas en el cálculo de 198.8 m²*
 
 ---
 
 **Análisis de eficiencia por configuración:**
 
-| Configuración | Dimensiones | Simetría | Eficiencia Operativa | Capacidad Máxima |
+| Configuración | Dimensiones Aproximadas | Simetría | Eficiencia Operativa | Capacidad |
 |:---:|:---:|:---:|:---:|:---:|
-| **Config 1** | 5m × 10m junto a B | ✅ Perfecta | ✅ Alta | 6 camiones |
-| Config 2 | 10m × 5m junto a A | ❌ Rota | ⚠️ Media | 5 camiones |
-| Config 3 | 7.07m × 7.07m | ❌ Rota | ❌ Baja | 4 camiones |
+| **Config 1** | ~20m × 10m junto a B | ✅ Buena | ✅ Alta | 5 camiones |
+| Config 2 | ~20m × 10m junto a A | ✅ Buena | ✅ Alta | 5 camiones |
+| Config 3 | ~14m × 14m | ⚠️ Regular | ⚠️ Media | 5 camiones |
 
-**Conclusión:** La **Configuración 1** es la óptima porque crea simetría perfecta de 3 × 200 m² = 600 m².
-
----
-
-### PASO 7: Caso de Estudio - Presupuesto Limitado
-
-Ahora que sabemos que necesitamos 1,696.4 m² para 15 camiones, pero también sabemos que esto representa una inversión muy alta, analicemos un **caso de estudio realista**:
-
-**Pregunta:** Si la empresa solo dispone de presupuesto para ampliar **50 m²**, ¿cuántos camiones podemos estacionar?
-
-**Solución usando la ecuación lineal:**
-
-Despejamos $n$ de la ecuación:
-
-$$A_{\text{ampliación}} = 149.76n - 550$$
-
-$$50 = 149.76n - 550$$
-
-$$149.76n = 600$$
-
-$$n = \frac{600}{149.76} = 4.01 \approx 4\,\text{camiones}$$
-
-**Respuesta teórica:** Con 600 m² totales (550 + 50), se pueden estacionar aproximadamente **4 camiones** según la ecuación.
-
-**Sin embargo**, mediante optimización de la distribución y aprovechamiento de pasillos compartidos, podemos alcanzar hasta **6 camiones** usando la Configuración 1 (simetría perfecta).
+**Conclusión:** Tanto la **Configuración 1** como la **2** son óptimas porque mantienen la uniformidad del diseño con anchos de 10m.
 
 ---
 
-### PASO 8: Solución Optimizada con Presupuesto Limitado (50 m²)
-
-Implementando la **Configuración 1** (5m × 10m junto a B) para crear simetría:
-
-**Distribución optimizada:**
-
-- Rectángulo A (20m × 10m): 2 camiones
-- Rectángulo B expandido (20m × 10m): 2 camiones
-- Rectángulo C (20m × 10m): 2 camiones
-- Pasillos compartidos de 3-4m de ancho
-
-**Capacidad total:** 6 camiones
-
-**Porcentaje del objetivo:**
-
-$$\%_{\text{alcanzado}} = \frac{6}{15} \times 100 = 40\%$$
-
-**Inversión necesaria:**
-
-Costo por m²: $92.40
-
-$$\text{Inversión} = 50\,\text{m}^2 \times \$92.40/\text{m}^2 = \$4,620$$
-
----
-
-**Visualización de la solución optimizada:**
-
-![Solución optimizada con 50m²](./images/solucion_optimizada.png)
-
-*Figura 7: Distribución optimizada de 6 camiones con ampliación de 50m² creando simetría perfecta*
-
----
-
-### PASO 9: Visualización de Opciones Evaluadas
+### PASO 7: Visualización de Opciones Evaluadas
 
 Durante el proceso de optimización, se evaluaron diferentes estrategias:
 
@@ -492,18 +446,15 @@ Durante el proceso de optimización, se evaluaron diferentes estrategias:
 | **Ampliación necesaria para 5 camiones** | **198.8 m²** |
 | **Ampliación necesaria para 10 camiones** | **947.6 m²** |
 | **Ampliación necesaria para 15 camiones** | **1,696.4 m²** |
-| **Objetivo solicitado** | **15 camiones** |
 | | |
-| **CASO DE ESTUDIO: Presupuesto limitado** | |
-| Ampliación disponible | 50 m² |
-| Configuración óptima | 5m × 10m junto a B |
-| Área total con ampliación | 600 m² |
-| Capacidad teórica (ecuación) | 4 camiones |
-| **Capacidad REAL optimizada** | **6 camiones** ✅ |
-| **% del objetivo alcanzado** | **40%** |
-| Déficit para 15 camiones | 9 camiones / 1,646.4 m² |
-| Inversión con 50 m² | $4,620 |
-| **Inversión para 15 camiones** | **~$156,944** |
+| **SOLUCIÓN CONSIDERANDO BATCHES** | |
+| Total de camiones en la flota | 15 camiones |
+| Ciclo operativo | 16h fuera + 8h dentro |
+| **Camiones simultáneos en parqueadero** | **5 camiones** |
+| **Ampliación necesaria (según ecuación)** | **198.8 m²** |
+| Configuración óptima | ~20m × 10m junto a B o A |
+| **Área total requerida** | **748.8 m²** |
+| **Inversión necesaria** | **~$18,373** |
 
 ---
 
@@ -552,41 +503,37 @@ $$R_{práctico} = 0.6 \times L_{total} = 8\,\text{m}$$
 
 Este cálculo es fundamental para garantizar que los camiones puedan maniobrar con seguridad.
 
-**3. Identificar restricciones reales**
+**3. Identificar restricciones reales considerando batches**
 
 El análisis matemático nos permitió identificar que:
 - 550 m² actuales → máximo 3-4 camiones
-- 600 m² (con 50m²) → máximo 6 camiones con optimización
-- 2,246.4 m² → 15 camiones (objetivo completo)
+- 748.8 m² (550 + 198.8) → 5 camiones simultáneos (suficiente para la operación)
+- 2,246.4 m² → 15 camiones simultáneos (si todos estuvieran al mismo tiempo)
 
-**4. Optimizar configuraciones**
+**4. Optimización mediante análisis de ciclos operativos**
 
-Mediante análisis geométrico, identificamos que la Configuración 1 (simetría perfecta de 3 × 200m²) es la óptima porque:
-- Crea uniformidad operativa
-- Maximiza eficiencia
-- Facilita señalización y mantenimiento
+La clave del problema está en entender que:
+- La flota tiene 15 camiones en total
+- Cada camión opera 16h fuera + 8h dentro del parqueadero
+- Esto significa solo **5 camiones simultáneos** requieren estacionamiento
+- La ecuación nos da: **198.8 m² de ampliación necesaria**
 
 **5. Tomar decisiones informadas**
 
-La empresa ahora puede decidir entre:
+La empresa puede tomar una decisión basada en datos reales:
 
-**Opción A: Inversión mínima**
-- Ampliación: 50 m²
-- Inversión: $4,620
-- Capacidad: 6 camiones
-- % del objetivo: 40%
+**Solución Óptima: Considerando batches de operación**
+- Ampliación: 198.8 m² (≈ 200 m²)
+- Inversión: ~$18,373
+- Capacidad simultánea: 5 camiones
+- Cubre el 100% de las necesidades operativas reales
+- Configuración: ~20m × 10m junto a rectángulo B o A
 
-**Opción B: Inversión completa**
+**Alternativa: Si se requiere capacidad para todos los camiones simultáneamente**
 - Ampliación: 1,696.4 m²
-- Inversión: $156,944
-- Capacidad: 15 camiones
-- % del objetivo: 100%
-
-**Opción C: Solución intermedia**
-- Ampliación: 500-800 m²
-- Inversión: $46,200 - $73,920
-- Capacidad: 8-10 camiones
-- % del objetivo: 53-67%
+- Inversión: ~$156,944
+- Capacidad simultánea: 15 camiones
+- Solo necesario si cambia el modelo operativo
 
 ---
 
@@ -615,26 +562,30 @@ La empresa ahora puede decidir entre:
 
 ### Recomendaciones para Rodrish S.A.
 
-**Recomendación Inmediata (Presupuesto Limitado):**
+**Recomendación Principal (Solución Óptima):**
 
-Implementar la **Configuración 1** con inversión de $4,620:
-- ✅ Crea simetría perfecta (3 × 200m²)
-- ✅ Capacidad para 6 camiones
-- ✅ Cumple normas HSE
-- ✅ Optimiza espacio disponible
-- ✅ Base sólida para futuras ampliaciones
-- ⚠️ Solo alcanza 40% del objetivo
+Implementar una ampliación de **198.8 m²** (~200 m²) con inversión de ~$18,373:
+- ✅ Cubre el 100% de las necesidades operativas reales (5 camiones simultáneos)
+- ✅ Cumple normas HSE con distanciamiento de 2m
+- ✅ Permite maniobras adecuadas con radio de giro de 8m
+- ✅ Se basa en la ecuación lineal: $A_{amp} = 149.76n - 550$
+- ✅ Inversión proporcional a las necesidades reales
+- ✅ Configuración: ~20m × 10m junto a rectángulo B o A
 
-**Recomendación a Mediano Plazo:**
+**Justificación:**
 
-Si el crecimiento operativo lo requiere, considerar ampliar en fases:
-- Fase 1: +50 m² (ya implementada) → 6 camiones
-- Fase 2: +400 m² → 10 camiones (67% objetivo)
-- Fase 3: +1,246.4 m² → 15 camiones (100% objetivo)
+Considerando el ciclo operativo de los camiones:
+- 15 camiones en total, pero solo 5 simultáneos en el parqueadero
+- Cada camión: 16h en ruta + 8h en parqueadero
+- División en 3 batches de 5 camiones cada uno
+- No es necesario dimensionar para 15 camiones simultáneos
 
-**Recomendación Alternativa:**
+**Recomendación a Largo Plazo:**
 
-Considerar un segundo parqueadero satélite en otra ubicación si el terreno actual no permite ampliación de 1,696.4 m².
+Solo si el modelo operativo cambia (más camiones en parqueadero simultáneamente):
+- Evaluar incrementar capacidad mediante ampliación adicional
+- Usar la ecuación $A_{amp} = 149.76n - 550$ para calcular ampliación exacta
+- Considerar segundo parqueadero satélite si la demanda excede significativamente
 
 ---
 

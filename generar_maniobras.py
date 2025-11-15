@@ -436,19 +436,17 @@ def generar_grafica_ecuacion_lineal():
     ax.plot(num_camiones, ampliacion_con_maniobras, 's-', linewidth=2.5,
             markersize=8, color='#e74c3c', label='Con maniobras (factor 1.44)')
 
-    # Línea horizontal en 50m²
-    ax.axhline(y=50, color='#2ecc71', linestyle='--', linewidth=2,
-               label='Ampliación disponible (50m²)', alpha=0.7)
+    # Punto específico para 5 camiones (capacidad simultánea requerida)
+    amp_5 = calcular_ampliacion_necesaria(5, area_actual, 104, factor_maniobra)
+    ax.plot(5, amp_5, 'D', markersize=15, color='#2ecc71',
+            markeredgecolor='#27ae60', markeredgewidth=2,
+            label=f'Solución: 5 camiones simultáneos\n(Requiere {amp_5:.0f}m²)', zorder=10)
 
-    # Punto específico para 15 camiones
+    # Punto de referencia para 15 camiones (total de la flota)
     amp_15 = calcular_ampliacion_necesaria(15, area_actual, 104, factor_maniobra)
-    ax.plot(15, amp_15, 'D', markersize=15, color='#f39c12',
-            markeredgecolor='#d68910', markeredgewidth=2,
-            label=f'Objetivo: 15 camiones\n(Requiere {amp_15:.0f}m²)', zorder=10)
-
-    # Sombreado de zona factible
-    ax.fill_between(num_camiones, 0, 50, alpha=0.15, color='#2ecc71',
-                     label='Zona factible con 50m²')
+    ax.plot(15, amp_15, 'o', markersize=12, color='#95a5a6',
+            markeredgecolor='#7f8c8d', markeredgewidth=2,
+            label=f'Referencia: 15 camiones (flota completa)\n(Requeriría {amp_15:.0f}m²)', zorder=9)
 
     # Configuración
     ax.set_xlabel('Número de camiones', fontsize=12, fontweight='bold')
@@ -460,11 +458,17 @@ def generar_grafica_ecuacion_lineal():
     ax.legend(loc='upper left', fontsize=10, framealpha=0.9)
 
     # Anotaciones
-    ax.annotate(f'Para 15 camiones:\n{amp_15:.0f}m² necesarios',
-                xy=(15, amp_15), xytext=(12, amp_15 + 300),
-                arrowprops=dict(arrowstyle='->', color='#f39c12', lw=2),
-                fontsize=10, fontweight='bold', color='#d68910',
+    ax.annotate(f'Solución óptima:\n5 camiones → {amp_5:.0f}m²',
+                xy=(5, amp_5), xytext=(8, amp_5 + 150),
+                arrowprops=dict(arrowstyle='->', color='#2ecc71', lw=2),
+                fontsize=10, fontweight='bold', color='#27ae60',
                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    ax.annotate(f'Flota completa:\n15 camiones → {amp_15:.0f}m²\n(no simultáneos)',
+                xy=(15, amp_15), xytext=(12, amp_15 + 200),
+                arrowprops=dict(arrowstyle='->', color='#95a5a6', lw=1.5),
+                fontsize=9, color='#7f8c8d',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.7))
 
     # Ecuación en la gráfica
     ecuacion_text = r"""
@@ -504,23 +508,21 @@ def generar_tabla_ampliacion():
         area_necesaria = n * 104 * factor_maniobra
         ampliacion = calcular_ampliacion_necesaria(n, area_actual, 104, factor_maniobra)
         area_total = area_actual + ampliacion
-        viabilidad = "✅ Factible" if ampliacion <= 50 else "❌ No factible"
 
         datos_tabla.append([
             n,
             f"{area_necesaria:.0f}",
             f"{ampliacion:.0f}",
-            f"{area_total:.0f}",
-            viabilidad
+            f"{area_total:.0f}"
         ])
 
     # Crear tabla
     columnas = ['N° Camiones', 'Área Necesaria\n(m²)', 'Ampliación\nRequerida (m²)',
-                'Área Total\n(m²)', 'Viabilidad\n(con 50m²)']
+                'Área Total\n(m²)']
 
     tabla = ax.table(cellText=datos_tabla, colLabels=columnas,
                      cellLoc='center', loc='center',
-                     colWidths=[0.15, 0.2, 0.2, 0.2, 0.25])
+                     colWidths=[0.2, 0.27, 0.27, 0.26])
 
     tabla.auto_set_font_size(False)
     tabla.set_fontsize(11)
@@ -538,10 +540,10 @@ def generar_tabla_ampliacion():
             else:
                 tabla[(i, j)].set_facecolor('white')
 
-            # Resaltar fila de 15 camiones
-            if datos_tabla[i-1][0] == 15:
-                tabla[(i, j)].set_facecolor('#ffe5b4')
-                tabla[(i, j)].set_text_props(weight='bold')
+            # Resaltar fila de 5 camiones (solución óptima)
+            if datos_tabla[i-1][0] == 5:
+                tabla[(i, j)].set_facecolor('#d5f4e6')
+                tabla[(i, j)].set_text_props(weight='bold', color='#27ae60')
 
     # Título
     ax.set_title('TABLA DE AMPLIACIÓN NECESARIA SEGÚN ECUACIÓN LINEAL\n' +
@@ -550,10 +552,10 @@ def generar_tabla_ampliacion():
 
     # Nota al pie
     nota = ("NOTA: La ecuación lineal considera un factor de 1.44 para incluir espacio de maniobras.\n"
-            "Área base actual: 550m² | Área por camión (estacionamiento): 104m² | "
-            "Área por camión (con maniobras): 150m²")
+            "Área base actual: 550m² | Área por camión (estacionamiento): 104m² | Área por camión (con maniobras): 150m²\n"
+            "SOLUCIÓN: La flota de 15 camiones opera en batches de 5 (16h fuera + 8h dentro) → Requiere ampliación de 198.8m²")
     fig.text(0.5, 0.05, nota, ha='center', fontsize=9, style='italic',
-             bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+             bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9))
 
     plt.savefig('./images/tabla_ampliacion_lineal.png', dpi=150, bbox_inches='tight')
     print("✅ Tabla de ampliación necesaria generada")

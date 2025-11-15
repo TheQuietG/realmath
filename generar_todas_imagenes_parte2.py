@@ -65,26 +65,30 @@ def generar_ecuacion_lineal():
     ax.plot(num_camiones, ampliacion_necesaria, 'o-', linewidth=3,
             markersize=8, color='#e74c3c', label='A_amp = 149.76n - 550')
 
-    # Punto para 15 camiones
+    # Punto para 5 camiones (capacidad simultánea requerida)
+    amp_5 = calcular_ampliacion_necesaria(5)
+    ax.plot(5, amp_5, 'D', markersize=15, color='#2ecc71',
+            markeredgecolor='#27ae60', markeredgewidth=2,
+            label=f'5 camiones simultáneos\n(Requiere {amp_5:.1f}m²)', zorder=10)
+
+    # Punto de referencia para 15 camiones (total de la flota)
     amp_15 = calcular_ampliacion_necesaria(15)
-    ax.plot(15, amp_15, 'D', markersize=15, color='#f39c12',
-            markeredgecolor='#d68910', markeredgewidth=2,
-            label=f'15 camiones\n(Requiere {amp_15:.1f}m²)', zorder=10)
-
-    # Punto para 50m²
-    ax.axhline(y=50, color='#2ecc71', linestyle='--', linewidth=2,
-               label='Presupuesto 50m²', alpha=0.7)
-
-    # Zona factible
-    ax.fill_between(num_camiones, 0, 50, alpha=0.15, color='#2ecc71',
-                     label='Zona factible (presupuesto limitado)')
+    ax.plot(15, amp_15, 'o', markersize=12, color='#95a5a6',
+            markeredgecolor='#7f8c8d', markeredgewidth=2,
+            label=f'15 camiones (flota completa)\n(Requeriría {amp_15:.1f}m²)', zorder=9)
 
     # Anotaciones
-    ax.annotate(f'Para 15 camiones:\n{amp_15:.0f}m² necesarios',
-                xy=(15, amp_15), xytext=(12, amp_15 + 300),
-                arrowprops=dict(arrowstyle='->', color='#f39c12', lw=2),
-                fontsize=10, fontweight='bold', color='#d68910',
+    ax.annotate(f'Solución óptima:\n5 camiones → {amp_5:.0f}m²',
+                xy=(5, amp_5), xytext=(8, amp_5 + 150),
+                arrowprops=dict(arrowstyle='->', color='#2ecc71', lw=2),
+                fontsize=10, fontweight='bold', color='#27ae60',
                 bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+
+    ax.annotate(f'Flota completa:\n15 camiones → {amp_15:.0f}m²\n(no simultáneos)',
+                xy=(15, amp_15), xytext=(12, amp_15 + 200),
+                arrowprops=dict(arrowstyle='->', color='#95a5a6', lw=1.5),
+                fontsize=9, color='#7f8c8d',
+                bbox=dict(boxstyle='round', facecolor='white', alpha=0.7))
 
     # Configuración
     ax.set_xlabel('Número de camiones (n)', fontsize=12, fontweight='bold')
@@ -137,20 +141,19 @@ def generar_tabla_ampliacion():
         area_necesaria = n * 104 * 1.44
         ampliacion = calcular_ampliacion_necesaria(n)
         area_total = 550 + ampliacion
-        viabilidad = "✅ Sí" if ampliacion <= 50 else "❌ No"
 
         datos_tabla.append([
             n, f"{area_necesaria:.0f}", f"{ampliacion:.0f}",
-            f"{area_total:.0f}", viabilidad
+            f"{area_total:.0f}"
         ])
 
     # Crear tabla
     columnas = ['N° Camiones', 'Área Necesaria\n(m²)', 'Ampliación\nRequerida (m²)',
-                'Área Total\n(m²)', 'Factible\ncon 50m²']
+                'Área Total\n(m²)']
 
     tabla = ax.table(cellText=datos_tabla, colLabels=columnas,
                      cellLoc='center', loc='center',
-                     colWidths=[0.15, 0.2, 0.2, 0.2, 0.25])
+                     colWidths=[0.2, 0.27, 0.27, 0.26])
 
     tabla.auto_set_font_size(False)
     tabla.set_fontsize(11)
@@ -168,10 +171,10 @@ def generar_tabla_ampliacion():
             else:
                 tabla[(i, j)].set_facecolor('white')
 
-            # Resaltar 15 camiones
-            if datos_tabla[i-1][0] == 15:
-                tabla[(i, j)].set_facecolor('#ffe5b4')
-                tabla[(i, j)].set_text_props(weight='bold')
+            # Resaltar 5 camiones (solución óptima)
+            if datos_tabla[i-1][0] == 5:
+                tabla[(i, j)].set_facecolor('#d5f4e6')
+                tabla[(i, j)].set_text_props(weight='bold', color='#27ae60')
 
     # Título
     ax.set_title('TABLA DE AMPLIACIÓN NECESARIA SEGÚN ECUACIÓN LINEAL\n' +
@@ -180,10 +183,10 @@ def generar_tabla_ampliacion():
 
     # Nota
     nota = ("NOTA: La ecuación considera factor 1.44 para incluir espacio de maniobras.\n"
-            "Área base: 550m² | Área estacionamiento/camión: 104m² | "
-            "Área real/camión (con maniobras): 150m²")
+            "Área base: 550m² | Área estacionamiento/camión: 104m² | Área real/camión (con maniobras): 150m²\n"
+            "SOLUCIÓN: La flota de 15 camiones opera en batches de 5 (16h fuera + 8h dentro) → Requiere ampliación de 198.8m²")
     fig.text(0.5, 0.05, nota, ha='center', fontsize=9, style='italic',
-             bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+             bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9))
 
     plt.savefig('./images/tabla_ampliacion_lineal.png', dpi=150, bbox_inches='tight')
     print("✅ Imagen 4b: tabla_ampliacion_lineal.png generada")
@@ -199,9 +202,9 @@ def generar_comparacion():
     fig, ax = plt.subplots(figsize=(12, 8))
 
     # Datos
-    areas = [550, 2246.4, 1696.4, 600]
-    labels = ['Área\nActual', 'Área\nNecesaria\n(15 cam.)', 'Déficit\n(Ampliación\nNecesaria)', 'Con 50m²\nAmpliación']
-    colors = ['#3498db', '#e74c3c', '#f39c12', '#2ecc71']
+    areas = [550, 748.8, 198.8, 2246.4]
+    labels = ['Área\nActual', 'Área\nRequerida\n(5 cam.)', 'Ampliación\nNecesaria\n(5 cam.)', 'Área para\n15 cam.\n(referencia)']
+    colors = ['#3498db', '#2ecc71', '#f39c12', '#95a5a6']
 
     # Gráfico de barras
     bars = ax.bar(range(len(areas)), areas, color=colors, alpha=0.7,
@@ -217,31 +220,33 @@ def generar_comparacion():
     # Configuración
     ax.set_ylabel('Área (m²)', fontsize=12, fontweight='bold')
     ax.set_title('COMPARACIÓN DE ÁREAS DEL PARQUEADERO\n' +
-                 'Análisis: Área Actual vs Necesaria vs Disponible',
+                 'Análisis: Solución Optimizada con Batches de Camiones',
                  fontsize=14, fontweight='bold', pad=20)
     ax.set_xticks(range(len(labels)))
     ax.set_xticklabels(labels, fontsize=11, fontweight='bold')
     ax.grid(axis='y', alpha=0.3, linestyle=':', linewidth=1)
 
     # Anotaciones
-    # Flecha mostrando el déficit
-    ax.annotate('', xy=(2, 2246.4), xytext=(2, 600),
-                arrowprops=dict(arrowstyle='<->', color='red', lw=3))
-    ax.text(2.3, 1400, 'Déficit:\n1,646.4 m²', fontsize=11,
-            color='red', fontweight='bold',
+    # Flecha mostrando la ampliación necesaria
+    ax.annotate('', xy=(1, 748.8), xytext=(1, 550),
+                arrowprops=dict(arrowstyle='<->', color='#27ae60', lw=3))
+    ax.text(1.3, 650, 'Ampliación:\n198.8 m²', fontsize=11,
+            color='#27ae60', fontweight='bold',
             bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     # Información
     info = """
-    ANÁLISIS:
-    • Para 15 camiones se requieren 2,246.4 m²
-    • Actualmente tenemos 550 m²
-    • Con presupuesto limitado (50m²) → 600 m²
-    • Déficit real: 1,646.4 m²
+    SOLUCIÓN OPTIMIZADA:
+    • 15 camiones en la flota
+    • 5 camiones simultáneos (batches)
+    • Ciclo: 16h fuera + 8h dentro
+    • Área actual: 550 m²
+    • Ampliación necesaria: 198.8 m²
+    • Área total: 748.8 m²
     """
     ax.text(0.02, 0.98, info, transform=ax.transAxes,
             fontsize=10, verticalalignment='top',
-            bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9),
+            bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9),
             family='monospace')
 
     plt.tight_layout()
@@ -260,25 +265,25 @@ def generar_configuraciones_ampliacion():
 
     configuraciones = [
         {
-            'nombre': 'Configuración 1\nJunto a B (Simetría)',
+            'nombre': 'Configuración 1\nJunto a B',
             'color_b': '#2ecc71',
-            'ampliacion': (0, 10, 5, 10),  # (x, y, ancho, alto)
-            'resultado': '20m × 10m\nSIMETRÍA\n✅',
-            'capacidad': '6 camiones'
+            'ampliacion': (15, 10, 19.88, 10),  # (x, y, ancho, alto) ~200m²
+            'resultado': '~35m × 10m\nUNIFORME\n✅',
+            'capacidad': '5 camiones'
         },
         {
             'nombre': 'Configuración 2\nJunto a A',
-            'color_b': '#f9e79f',
-            'ampliacion': (20, 20, 5, 10),
-            'resultado': '25m × 10m\nASIMÉTRICA\n⚠️',
+            'color_b': '#2ecc71',
+            'ampliacion': (20, 20, 19.88, 10),  # ~200m²
+            'resultado': '~40m × 10m\nUNIFORME\n✅',
             'capacidad': '5 camiones'
         },
         {
             'nombre': 'Configuración 3\nCuadrada',
             'color_b': '#f9e79f',
-            'ampliacion': (15, 10, 7.07, 7.07),
-            'resultado': '7.07 × 7.07\nDIFÍCIL\n❌',
-            'capacidad': '4 camiones'
+            'ampliacion': (15, 10, 14.1, 14.1),  # ~200m²
+            'resultado': '~14 × 14m\nREGULAR\n⚠️',
+            'capacidad': '5 camiones'
         }
     ]
 
@@ -307,20 +312,20 @@ def generar_configuraciones_ampliacion():
         ampliacion = Rectangle((x, y), w, h, facecolor='#e74c3c',
                                edgecolor='#c0392b', linewidth=3, alpha=0.6)
         ax.add_patch(ampliacion)
-        ax.text(x + w/2, y + h/2, 'AMPLIACIÓN\n50m²',
+        ax.text(x + w/2, y + h/2, 'AMPLIACIÓN\n~200m²',
                 ha='center', va='center', fontsize=8,
                 fontweight='bold', color='white')
 
         # Configuración
-        ax.set_xlim(-2, 28)
+        ax.set_xlim(-2, 45)
         ax.set_ylim(-2, 32)
         ax.set_aspect('equal')
         ax.grid(True, alpha=0.2)
         ax.set_title(f"{config['nombre']}\n{config['resultado']}\nCapacidad: {config['capacidad']}",
                      fontsize=10, fontweight='bold', pad=10)
 
-    fig.suptitle('CONFIGURACIONES POSIBLES DE AMPLIACIÓN (50m²)\n' +
-                 'Análisis de Simetría y Eficiencia',
+    fig.suptitle('CONFIGURACIONES POSIBLES DE AMPLIACIÓN (~200m²)\n' +
+                 'Basado en ecuación para 5 camiones simultáneos',
                  fontsize=14, fontweight='bold')
 
     plt.tight_layout(rect=[0, 0, 1, 0.95])
@@ -330,14 +335,14 @@ def generar_configuraciones_ampliacion():
 
 
 #=============================================================================
-# IMAGEN 7: SOLUCIÓN OPTIMIZADA CON 50m²
+# IMAGEN 7: SOLUCIÓN OPTIMIZADA CON ~200m²
 #=============================================================================
 
 def generar_solucion_optimizada():
     """Genera visualización de la solución optimizada"""
-    fig, ax = plt.subplots(figsize=(14, 12))
+    fig, ax = plt.subplots(figsize=(16, 12))
 
-    # Rect A (con ampliación aplicada a B para simetría)
+    # Rect A
     rect_a = Rectangle((0, 20), 20, 10, facecolor='#aed6f1',
                        edgecolor='#2874a6', linewidth=3, alpha=0.5)
     ax.add_patch(rect_a)
@@ -345,19 +350,19 @@ def generar_solucion_optimizada():
             ha='center', va='top', fontsize=10, fontweight='bold',
             color='#1a5490')
 
-    # Rect B EXPANDIDO (15m → 20m con ampliación)
-    rect_b = Rectangle((0, 10), 20, 10, facecolor='#2ecc71',
+    # Rect B EXPANDIDO (~35m con ampliación)
+    rect_b = Rectangle((0, 10), 34.88, 10, facecolor='#2ecc71',
                        edgecolor='#27ae60', linewidth=3, alpha=0.5)
     ax.add_patch(rect_b)
-    ax.text(10, 15, 'RECTÁNGULO B (EXPANDIDO)\n20m × 10m = 200 m²\n✅ SIMETRÍA PERFECTA',
+    ax.text(17.5, 15, 'RECTÁNGULO B (EXPANDIDO)\n~35m × 10m = 350 m²\n✅ UNIFORME',
             ha='center', va='center', fontsize=10, fontweight='bold',
             color='#1e8449')
 
     # Indicador de ampliación en B
-    amp_indicator = Rectangle((15, 10), 5, 10, facecolor='none',
+    amp_indicator = Rectangle((15, 10), 19.88, 10, facecolor='none',
                               edgecolor='red', linewidth=3, linestyle='--')
     ax.add_patch(amp_indicator)
-    ax.text(17.5, 9, '+50m²', ha='center', fontsize=9, fontweight='bold',
+    ax.text(25, 9, '+198.8m²', ha='center', fontsize=9, fontweight='bold',
             color='red', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     # Rect C
@@ -368,50 +373,51 @@ def generar_solucion_optimizada():
             ha='center', va='bottom', fontsize=10, fontweight='bold',
             color='#1a5490')
 
-    # Camiones (2 por zona)
-    # Zona A
+    # Camiones (5 camiones distribuidos)
+    # Zona A - 2 camiones
     dibujar_camion(ax, 6, 25, 0, color='#3498db', alpha=0.7)
     dibujar_camion(ax, 14, 25, 0, color='#3498db', alpha=0.7)
 
-    # Zona B
-    dibujar_camion(ax, 6, 15, 0, color='#3498db', alpha=0.7)
-    dibujar_camion(ax, 14, 15, 0, color='#3498db', alpha=0.7)
+    # Zona B - 2 camiones
+    dibujar_camion(ax, 8, 15, 0, color='#3498db', alpha=0.7)
+    dibujar_camion(ax, 20, 15, 0, color='#3498db', alpha=0.7)
 
-    # Zona C
-    dibujar_camion(ax, 6, 5, 0, color='#3498db', alpha=0.7)
-    dibujar_camion(ax, 14, 5, 0, color='#3498db', alpha=0.7)
+    # Zona C - 1 camión
+    dibujar_camion(ax, 10, 5, 0, color='#3498db', alpha=0.7)
 
     # Numeración
-    for i, (x, y) in enumerate([(6, 25), (14, 25), (6, 15), (14, 15), (6, 5), (14, 5)], 1):
+    for i, (x, y) in enumerate([(6, 25), (14, 25), (8, 15), (20, 15), (10, 5)], 1):
         ax.text(x, y, str(i), ha='center', va='center',
                 fontsize=14, fontweight='bold', color='white',
                 bbox=dict(boxstyle='circle', facecolor='red', alpha=0.8))
 
     # Configuración
-    ax.set_xlim(-3, 25)
+    ax.set_xlim(-3, 38)
     ax.set_ylim(-2, 32)
     ax.set_aspect('equal')
     ax.grid(True, alpha=0.3, linestyle=':', linewidth=1)
     ax.set_xlabel('Distancia (metros)', fontsize=12, fontweight='bold')
     ax.set_ylabel('Distancia (metros)', fontsize=12, fontweight='bold')
-    ax.set_title('SOLUCIÓN OPTIMIZADA CON 50m² DE AMPLIACIÓN\n' +
-                 'Configuración 1: Simetría Perfecta (3 × 200m² = 600m²)\n' +
-                 'Capacidad: 6 camiones (40% del objetivo)',
+    ax.set_title('SOLUCIÓN OPTIMIZADA CON ~200m² DE AMPLIACIÓN\n' +
+                 'Configuración para 5 camiones simultáneos (batches)\n' +
+                 'Área total: 748.8m² | Inversión: ~$18,373',
                  fontsize=14, fontweight='bold', pad=20)
 
     # Información
     info = """
     SOLUCIÓN ÓPTIMA:
-    • Ampliación: 5m × 10m = 50 m²
+    • Ampliación: ~20m × 10m = 198.8 m²
     • Ubicación: Junto a B
-    • Resultado: 3 × 200m² (simetría)
-    • Capacidad: 6 camiones
-    • Inversión: $4,620
-    • % objetivo: 40%
+    • Resultado: Área uniforme de 10m
+    • Capacidad: 5 camiones simultáneos
+    • Batches: 3 grupos de 5 camiones
+    • Ciclo: 16h fuera + 8h dentro
+    • Inversión: ~$18,373
+    • Cubre 100% necesidades operativas
     """
     ax.text(0.02, 0.98, info, transform=ax.transAxes,
             fontsize=10, verticalalignment='top',
-            bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.9),
+            bbox=dict(boxstyle='round', facecolor='#d5f4e6', alpha=0.9),
             family='monospace')
 
     plt.tight_layout()

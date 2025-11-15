@@ -30,8 +30,10 @@ Análisis matemático y visualización optimizada para el diseño del parqueader
 - **Rectángulo A**: 20m × 10m = 200 m²
 - **Rectángulo B**: 15m × 10m = 150 m²
 - **Rectángulo C**: 20m × 10m = 200 m²
-- **Ampliación**: 10m × 5m = 50 m²
-- **Camiones requeridos**: 15
+- **Área actual total**: 550 m²
+- **Flota total**: 15 camiones
+- **Camiones simultáneos**: 5 (sistema de batches: 16h fuera + 8h dentro)
+- **Ampliación necesaria**: 198.8 m² (según ecuación: A_amp = 149.76n - 550)
 - **Distanciamiento de seguridad**: 2m
 - **Radio de conos**: 0.4m
 
