@@ -600,9 +600,38 @@ Solo si el modelo operativo cambia (más camiones en parqueadero simultáneament
 
 ## Referencias
 
-- Geometría Analítica y Cálculo de Áreas
-- Ecuaciones Lineales Aplicadas a Problemas Reales
-- Normativa HSE para Parqueaderos Industriales
-- Cálculo de Radio de Giro para Vehículos Pesados
-- Transformaciones Geométricas en el Plano Cartesiano
-- Optimización de Espacios mediante Métodos Matemáticos
+**Fundamentos Matemáticos:**
+
+Khan Academy. (2024). *Ecuaciones lineales*. https://es.khanacademy.org/math/algebra/x2f8bb11595b61c86:linear-equations-graphs
+
+Stewart, J., Redlin, L., & Watson, S. (2015). *Precálculo: Matemáticas para el cálculo* (7ª ed.). Cengage Learning.
+
+Swokowski, E. W., & Cole, J. A. (2011). *Álgebra y trigonometría con geometría analítica* (13ª ed.). Cengage Learning.
+
+**Normativa y Seguridad:**
+
+Ministerio de Trabajo de Colombia. (2015). *Decreto 1072 de 2015 - Sistema de Gestión de Seguridad y Salud en el Trabajo (SG-SST)*. https://www.mintrabajo.gov.co/documents/20147/0/DUR+Sector+Trabajo+Actualizado+a+15+de+abril++de+2016.pdf
+
+OSHA - Occupational Safety and Health Administration. (2023). *Materials Handling and Storage*. U.S. Department of Labor. https://www.osha.gov/materials-handling
+
+**Ingeniería de Transporte:**
+
+Garber, N. J., & Hoel, L. A. (2014). *Ingeniería de tránsito y carreteras* (4ª ed.). Cengage Learning.
+
+Institute of Transportation Engineers. (2018). *Parking Generation Manual* (5th ed.). ITE. https://www.ite.org/pub/?id=1D5924C3-E78E-7BA4-515A-0060C6D6F1FE
+
+Kraay, J. H., Mathijssen, M., & Wegman, F. (2013). *Manual de diseño de estacionamientos*. SWOV Institute for Road Safety Research.
+
+**Visualizaciones y Herramientas:**
+
+Hunter, J. D. (2007). Matplotlib: A 2D graphics environment. *Computing in Science & Engineering*, 9(3), 90-95. https://doi.org/10.1109/MCSE.2007.55
+
+McKinney, W. (2010). Data structures for statistical computing in Python. *Proceedings of the 9th Python in Science Conference*, 56-61. https://doi.org/10.25080/Majora-92bf1922-00a
+
+Van Rossum, G., & Drake, F. L. (2009). *Python 3 Reference Manual*. CreateSpace.
+
+**Nota sobre las visualizaciones:** Todas las gráficas, diagramas y visualizaciones presentadas en este documento fueron generadas mediante scripts en Python desarrollados con asistencia de Claude AI (Anthropic, 2024). Los scripts utilizan las bibliotecas Matplotlib y NumPy para crear representaciones precisas basadas en las ecuaciones matemáticas y cálculos del proyecto. El código fuente está disponible en los archivos `generar_todas_imagenes_parte2.py` y `generar_maniobras.py` del repositorio del proyecto.
+
+**Inteligencia Artificial:**
+
+Anthropic. (2024). *Claude AI* [Large Language Model]. https://www.anthropic.com/claude
