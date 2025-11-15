@@ -12,7 +12,7 @@ Optimizar el diseño del parqueadero de maniobras para camiones de la empresa lo
 - Normativa HSE (distanciamiento de seguridad 2m)
 - Restricciones geométricas del plano cartesiano
 - Objetivo: Estacionar 15 camiones
-- Presupuesto: Ampliación máxima de 50 m²
+- Presupuesto: Buscar la ampliación necesaria para que los 15 camiones puedan estar en el parqueadero suponiendo 3 turnos de parqueadero diario, cada uno de 8h, lo que seria 5 camiones en parqueo y 16 horas operativas para la rotacion de los 15 en baches de 5
 
 ---
 
@@ -27,13 +27,13 @@ Optimizar el diseño del parqueadero de maniobras para camiones de la empresa lo
 ### Especificaciones del Camión:
 - Largo: 12m
 - Ancho: 2.5m
-- Distanciamiento de seguridad: 2m (conos)
-- Espacio requerido con seguridad: 16m × 6.5m = 104 m²
+- Distanciamiento de seguridad: 1m (conos)
+- Espacio requerido con seguridad: Encontrar
 
 ### Restricción Presupuestaria:
-- Ampliación disponible: **50 m²**
-- Costo por m²: $92.40
-- Inversión máxima: $4,620
+- Ampliación disponible: **X m²**
+- Costo por m²: $50
+- Inversión máxima: TBD
 
 ---
 
